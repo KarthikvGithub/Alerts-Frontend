@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- CSS for styling -->
+    <style>
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        }
+    
+        .container {
+          width: 80%;
+          max-width: 800px;
+          margin: 20px auto;
+        }
+
+        .marked {
+            background-color: red;
+        }
+
+        .search-bar {
+          display: flex;
+          align-items: center;
+          border: 1px solid antiquewhite;
+          border-radius: 5px;
+          padding: 10px;
+        }
+    
+        .search-bar select, .search-bar input {
+          font-size: 16px;
+          padding: 5px;
+          margin-right: 10px;
+        }
+    
+        .search-bar input {
+          flex: 1;
+        }
+    
+        #alerts {
+          margin-top: 20px;
+        }
+    
+        .alert {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background-color: whitesmoke;
+          border-radius: 5px;
+          padding: 10px;
+          /* margin-bottom: 10px; */
+        }
+    
+        .alert-type {
+          font-weight: bold;
+          color: red;
+        }
+    
+        .alert-details {
+          margin-left: 10px;
+          font-size: 10px;
+        }
+    
+        .alert-button {
+          background-color: white;
+          border: 1px solid cyan;
+          border-radius: 5px;
+          padding: 5px 10px;
+          cursor: pointer;
+        }
+    
+        .alert-button:hover {
+          background-color: cyan;
+        }
+    
+        .footer {
+          text-align: center;
+          font-size: 12px;
+          color: seagreen;
+          margin-top: 20px;
+        }
+      </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- Container for search bar and filter options -->
+        <div class="search-bar">
+          <input type="text" name="search" placeholder="Search" id="searchText">
+          <select name="vehicle" id="vehicleSelect">
+            <option value="">Vehicle #</option>
+            <option value="KA12A3456">KA12A3456</option>
+            <option value="MH12A3456">MH12A3456</option>
+          </select>
+          <select name="date-range" id="dateSelect">
+            <option value="">Date Range</option>
+            <option value="2023-03-01_2023-03-02" selected>2023/03/01 to 2023/03/02</option>
+            <option value="2023-03-03_2023-03-04">2023/03/03 to 2023/03/04</option>
+          </select>
+        </div>
+
+        <!-- Container for all alerts -->
+        <div id="alerts">
+          <div style="padding: 5px"> Alerts </div>
+          <hr>
+
+          <!-- First Alert -->
+          <div class="alert" vehicle-num="KA12A3456" date-value="2023-03-01">
+            <div class="alert-type">Unsafe driving</div>
+            <div class="alert-details">
+              <div>1 March 2023 at 21:30</div>
+              <div>Driver: Ramesh / KA12A3456</div>
+            </div>
+            <div class="alert-button">Mark As False Alarm</div>
+          </div>
+          <hr>
+
+          <!-- Second Alert -->
+          <div class="alert" vehicle-num="MH12A3456" date-value="2023-03-04">
+            <div class="alert-type">Distracted driver</div>
+            <div class="alert-details">
+              <div>4 March 2023 at 21:30</div>
+              <div>Driver: Suresh / MH12A3456</div>
+            </div>
+            <div class="alert-button">Mark As False Alarm</div>
+          </div>
+        </div>
+
+
+        <!-- Container for footer -->
+        <div class="footer">
+          &copy; Karthik Valdas 2023
+        </div>
+      </div>
+
+
+      <!-- JavaScript to handle filters and search -->
+      <script>
+
+        //CODE FOR SEARCH FUNCTION(FILTERS TEXT BASED)
+
+        // Get the input element and alerts container
+        const searchInput = document.getElementById('searchText');
+        const alertsContainer = document.getElementById('alerts');
+
+        // Add event listener for input changes
+        searchInput.addEventListener('input', filteralerts);
+
+        function filteralerts() {
+            // Get the value entered by the user
+            const searchTerm = searchInput.value.toLowerCase();
+
+            // Get all alerts
+            const alerts = alertsContainer.getElementsByClassName('alert');
+
+            // Loop through alerts and show/hide based on search term
+            Array.from(alerts).forEach(alert => {
+                const alertText = alert.textContent.toLowerCase();
+                if (alertText.includes(searchTerm)) {
+                    alert.style.display = 'block';
+                } else {
+                    alert.style.display = 'none';
+                }
+            });
+        }
+
+
+        //CODE FOR FILTER BASED ON VEHICLE NUMBERS
+
+        // Get the select element and alerts container
+        const vehicleSelect = document.getElementById('vehicleSelect');
+
+        // Add event listener for select changes
+        vehicleSelect.addEventListener('change', filternumbers);
+
+        function filternumbers() {
+            // Get the selected vehicle number
+            const selectedVehicle = vehicleSelect.value;
+
+            // Get all alerts
+            const alerts = alertsContainer.getElementsByClassName('alert');
+
+            // Loop through alerts and show/hide based on selected vehicle
+            Array.from(alerts).forEach(alert => {
+                const alertVehicles = alert.getAttribute('vehicle-num');
+                if (alertVehicles.includes(selectedVehicle)) {
+                    alert.style.display = 'block';
+                } else {
+                    alert.style.display = 'none';
+                }
+            });
+        }
+
+
+        //CODE FOR FILTER BASED ON DATE RANGE
+
+        // Get the select element and alerts container
+        const dateSelect = document.getElementById('dateSelect');
+
+        // Add event listener for select changes
+        dateSelect.addEventListener('change', filterDates);
+
+        function filterDates() {
+            // Get the selected date range
+            const selectedDateRange = dateSelect.value.split('_');
+            const startDate = new Date(selectedDateRange[0]);
+            const endDate = new Date(selectedDateRange[1]);
+
+            // Get all alerts
+            const alerts = alertsContainer.getElementsByClassName('alert');
+
+            // Loop through alerts and show/hide based on selected date range
+            Array.from(alerts).forEach(alert => {
+                const alertDate = new Date(alert.getAttribute('date-value'));
+
+                if (alertDate >= startDate && alertDate <= endDate) {
+                    alert.style.display = 'block';
+                } else {
+                    alert.style.display = 'none';
+                }
+            });
+        }
+
+
+        //CODE TO MARK THE ALERT
+        // Add click event listener to the divisions
+        divisionsContainer.addEventListener('click', function (event) {
+            const clickedDivision = event.target;
+
+            // Remove 'marked' class from all divisions
+            const allDivisions = divisionsContainer.getElementsByClassName('alert-button');
+            Array.from(allDivisions).forEach(alert => {
+                alert.classList.remove('marked');
+            });
+
+            // Add 'marked' class to the clicked division
+            clickedDivision.classList.add('marked');
+        });
+      </script>
+</body>
+</html>
