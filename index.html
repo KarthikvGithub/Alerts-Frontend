@@ -131,15 +131,16 @@
 
 
         <!-- Container for footer -->
-        <div class="footer">
-          &copy; Karthik Valdas 2023
-        </div>
+        <div id="footer" class="footer"></div>
       </div>
 
 
       <!-- JavaScript to handle filters and search -->
       <script>
 
+        //Footer date
+        const year = new Date().getFullYear();
+        document.getElementById('footer').innerHTML = "&copy; Karthik Valdas "+ year;
         //CODE FOR SEARCH FUNCTION(FILTERS TEXT BASED)
 
         // Get the input element and alerts container
